@@ -28,7 +28,7 @@ class ImageToVideoConverter(Node):
         topic_name = self.get_parameter('topic').value
         output_file = self.get_parameter('output').value
         self.fps = self.get_parameter('fps').value
-        self.compressed = self.get_parameter('compressed').valuepassthrough
+        self.compressed = self.get_parameter('compressed').value
 
         if not topic_name:
             self.get_logger().error('Must specify input topic!')

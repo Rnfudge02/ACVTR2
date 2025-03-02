@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'bag_to_mp4.py = adtr2_tools.bag_to_mp4:main'
+            'bag_to_mp4.py = acvtr2_core.bag_to_mp4:main'
         ],
     },
 )

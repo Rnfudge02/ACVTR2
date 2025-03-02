@@ -7,6 +7,7 @@
 #Imports
 import cv2
 import numpy as np
+import sys
 
 #Empty callback function
 def nothing(x):
@@ -21,7 +22,7 @@ cv2.createTrackbar('S_max', 'Trackbars', 255, 255, nothing)
 cv2.createTrackbar('V_min', 'Trackbars', 100, 255, nothing)
 cv2.createTrackbar('V_max', 'Trackbars', 255, 255, nothing)
 
-img = cv2.imread("buoy_img.png")
+img = cv2.imread(sys.argv[1])
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 while True:
