@@ -30,16 +30,17 @@ class ImageToVideoConverter(Node):
         self.fps = self.get_parameter('fps').value
         self.compressed = self.get_parameter('compressed').value
 
+        #If topic is empty, exit
         if not topic_name:
             self.get_logger().error('Must specify input topic!')
             raise ValueError('Input topic not specified')
 
-        # Initialize CV bridge
+        #Initialize CV bridge
         self.bridge = CvBridge()
         self.video_writer = None
         self.frame_size = None
 
-        # Create appropriate subscriber
+        #Create appropriate subscriber
         if self.compressed:
             self.subscription = self.create_subscription(
                 CompressedImage,
@@ -55,8 +56,11 @@ class ImageToVideoConverter(Node):
 
         self.get_logger().info(f'Listening to {topic_name}, saving to {output_file}')
 
+    #Callback for processing raw video
     def image_callback(self, msg):
         self.get_logger().info(f'Received image: encoding = {msg.encoding}, width = {msg.width}, height = {msg.height}')
+
+        #Try to decode message, and store
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding = 'bgr8')
             self.get_logger().info(f'Converted image shape: {cv_image.shape}')
@@ -64,8 +68,10 @@ class ImageToVideoConverter(Node):
             self.get_logger().error(f'Image conversion error: {str(e)}')
             return
 
+        #Process the image
         self.process_frame(cv_image)
 
+    #Callbck for processing compressed video
     def compressed_callback(self, msg):
         try:
             np_arr = np.frombuffer(msg.data, np.uint8)
@@ -79,12 +85,14 @@ class ImageToVideoConverter(Node):
 
         self.process_frame(cv_image)
 
+    #Just write to output right now, but could be more in the future if any preprocessing steps are needed
     def process_frame(self, frame):
         if self.video_writer is None:
             self.initialize_writer(frame)
 
         self.video_writer.write(frame)
 
+    #Initializes the video writer
     def initialize_writer(self, frame):
         height, width = frame.shape[:2]
         self.frame_size = (width, height)
